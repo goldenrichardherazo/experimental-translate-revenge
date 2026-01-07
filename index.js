@@ -109,10 +109,11 @@ var index = {
             }
         });
     },
-    onUnload: () => {
+onUnload: () => {
         metro.patcher.unpatchAll();
         translationsCache.clear();
     },
     settings: SettingsUI
-    },    
+};
+
 module.exports = { default: index };
