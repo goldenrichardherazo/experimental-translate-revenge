@@ -114,4 +114,5 @@ var index = {
         translationsCache.clear();
     },
     settings: SettingsUI
+    },    
 module.exports = { default: index };
