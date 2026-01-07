@@ -1,7 +1,11 @@
 {
-  "name": "Equicord Translate",
+  "name": "Ported Translate",
   "description": "Traduce mensajes usando Google o DeepL (Port de Equicord)",
-  "authors": [{ "name": "Richard", "id": "0000000000000000" }],
-  "main": "index.js",
-  "hash": "auto"
+  "authors": [
+    {
+      "name": "Lipop_1994",
+      "id": "1113957692428521563" 
+    }
+  ],
+  "main": "index.js"
 }
