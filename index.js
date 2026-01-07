@@ -10,37 +10,16 @@
         return { text: data[0].map((x) => x[0]).join(""), source: data[2] };
     }
     else {
-        // Lógica simplificada para DeepL
         return { text: "Service not configured", source: "error" };
     }
-}const GoogleLanguages = {
-    "en": "English",
-    "es": "Spanish",
-    "fr": "French",
-    "de": "German",
-    "it": "Italian",
-    "ja": "Japanese",
-    "ko": "Korean",
-    "pt": "Portuguese",
-    "ru": "Russian",
-    "zh": "Chinese"
-};
-const DeeplLanguages = {
-    "EN-US": "English (US)",
-    "ES": "Spanish",
-    "FR": "French",
-    "DE": "German",
-    "JA": "Japanese"
-};const { FormSection, FormSwitch, FormDivider, FormInput, FormLabel } = components.Forms;
+}const GoogleLanguages = { "en": "English", "es": "Spanish", "fr": "French", "de": "German", "it": "Italian", "ja": "Japanese", "ko": "Korean", "pt": "Portuguese", "ru": "Russian", "zh": "Chinese" };
+const DeeplLanguages = { "EN-US": "English (US)", "ES": "Spanish", "FR": "French", "DE": "German", "JA": "Japanese" };const { FormSection, FormSwitch, FormDivider, FormInput, FormLabel } = components.Forms;
 function SettingsUI() {
     storage.useProxy(plugin.storage);
     const langs = plugin.storage.service === "google" ? GoogleLanguages : DeeplLanguages;
-    const langOptions = Object.entries(langs).map(([value, label]) => ({
-        label: label,
-        value: value
-    }));
+    const langOptions = Object.entries(langs).map(([value, label]) => ({ label: label, value: value }));
     return (common.React.createElement(components.Forms.FormScrollView, null,
-        common.React.createElement(FormSection, { title: "Servicio de Traducci\u00F3n" },
+        common.React.createElement(FormSection, { title: "Servicio de Traducción" },
             common.React.createElement(components.SearchablePicker, { label: "Servicio", value: plugin.storage.service, onValueChange: (v) => plugin.storage.service = v, items: [
                     { label: "Google Translate", value: "google" },
                     { label: "DeepL Free", value: "deepl" },
@@ -48,9 +27,9 @@ function SettingsUI() {
                 ] }),
             plugin.storage.service.startsWith("deepl") && (common.React.createElement(FormInput, { label: "DeepL API Key", placeholder: "Introduce tu clave...", value: plugin.storage.deeplApiKey, onChange: (v) => plugin.storage.deeplApiKey = v }))),
         common.React.createElement(FormDivider, null),
-        common.React.createElement(FormSection, { title: "Traducci\u00F3n de Mensajes (Recibidos)" },
+        common.React.createElement(FormSection, { title: "Traducción de Mensajes (Recibidos)" },
             common.React.createElement(components.SearchablePicker, { label: "Idioma Destino", value: plugin.storage.receivedOutput, onValueChange: (v) => plugin.storage.receivedOutput = v, items: langOptions })),
-        common.React.createElement(FormSection, { title: "Auto-Traducci\u00F3n (Al enviar)" },
+        common.React.createElement(FormSection, { title: "Auto-Traducción (Al enviar)" },
             common.React.createElement(FormSwitch, { label: "Activar Auto-Translate", value: plugin.storage.autoTranslate, onValueChange: (v) => plugin.storage.autoTranslate = v }),
             common.React.createElement(components.SearchablePicker, { label: "Traducir mis mensajes a:", value: plugin.storage.sentOutput, onValueChange: (v) => plugin.storage.sentOutput = v, items: langOptions }))));
 }const MessageActions = metro.findByProps("sendMessage", "editMessage");
@@ -65,35 +44,30 @@ var index = {
         plugin.storage.autoTranslate ??= false;
         const MessageActionSheet = metro.findByName("MessageActionSheet", false);
         metro.patcher.after("default", MessageActionSheet, ([{ message }], res) => {
-            const buttons = res.props.children.props.children;
-            buttons.push({
-                label: "Translate",
-                onPress: async () => {
-                    ActionSheet.hideActionSheet();
-                    try {
-                        const res = await translate("received", message.content);
-                        translationsCache.set(message.id, res);
-                        common.toast.show("Message Translated");
+            const buttons = res?.props?.children?.props?.children;
+            if (buttons) {
+                buttons.push({
+                    label: "Translate",
+                    onPress: async () => {
+                        ActionSheet.hideActionSheet();
+                        try {
+                            const res = await translate("received", message.content);
+                            translationsCache.set(message.id, res);
+                            common.toast.show("Message Translated");
+                        }
+                        catch (e) {
+                            common.toast.show("Error: " + e.message);
+                        }
                     }
-                    catch (e) {
-                        common.toast.show("Error: " + e.message);
-                    }
-                }
-            });
+                });
+            }
         });
         const MessageContent = metro.findByName("MessageContent", false);
         metro.patcher.after("default", MessageContent, ([{ message }], res) => {
             if (translationsCache.has(message.id)) {
                 const tr = translationsCache.get(message.id);
                 res.props.children.push(common.React.createElement(Text, {
-                    style: {
-                        marginTop: 4,
-                        padding: 4,
-                        backgroundColor: "rgba(128, 128, 128, 0.1)",
-                        borderRadius: 4,
-                        fontStyle: "italic",
-                        color: "#b9bbbe"
-                    }
+                    style: { marginTop: 4, padding: 4, backgroundColor: "rgba(128, 128, 128, 0.1)", borderRadius: 4, fontStyle: "italic", color: "#b9bbbe" }
                 }, `Traducido (${tr.source}): ${tr.text}`));
             }
         });
@@ -109,11 +83,11 @@ var index = {
             }
         });
     },
-onUnload: () => {
+    onUnload: () => {
         metro.patcher.unpatchAll();
         translationsCache.clear();
     },
     settings: SettingsUI
-};
+}; // <--- AQUÍ ESTABA EL ERROR (Faltaba esta llave)
 
 module.exports = { default: index };
