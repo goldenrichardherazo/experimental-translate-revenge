@@ -1,4 +1,4 @@
-var EquicordTranslate=(function(metro,plugin,common,components,storage){'use strict';async function translate(kind, text) {
+'use strict';var metro=require('@vendetta/metro'),plugin=require('@vendetta/plugin'),common=require('@vendetta/metro/common'),components=require('@vendetta/ui/components'),storage=require('@vendetta/storage');async function translate(kind, text) {
     const service = plugin.storage.service || "google";
     const targetLang = plugin.storage[`${kind}Output`] || "en";
     if (service === "google") {
@@ -114,4 +114,4 @@ var index = {
         translationsCache.clear();
     },
     settings: SettingsUI
-};return index;})(metro,plugin,common,components,storage);
+};module.exports=index;
