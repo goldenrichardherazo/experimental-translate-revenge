@@ -1,0 +1,7 @@
+{
+  "name": "Equicord Translate",
+  "description": "Traduce mensajes usando Google o DeepL (Port de Equicord)",
+  "authors": [{ "name": "Richard", "id": "0000000000000000" }],
+  "main": "index.js",
+  "hash": "auto"
+}
