@@ -1,5 +1,5 @@
 {
-  "name": "Experimental Translate",
+  "name": "Tex",
   "description": "Traduce mensajes usando Google o DeepL",
   "authors": [
     {
@@ -9,3 +9,4 @@
   ],
   "main": "index.js"
 }
+
